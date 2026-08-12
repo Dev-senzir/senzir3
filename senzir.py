@@ -1343,7 +1343,7 @@ async def unblock_user(event):
 DevSenzir = [7422264678]
 
 @senzir.on(events.NewMessage(incoming=True))
-async def senzir(event):
+async def handle_senzir(event):
     if event.message.message.startswith("تمويل") and event.sender_id in DevShahm:
         message = event.message
         channel_username = None
