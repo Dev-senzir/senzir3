@@ -1,17 +1,35 @@
+databases:
+  - name: V1
+    ipAllowList: []
+    region: frankfurt
+    plan: free
 services:
-  - type: worker
-    name: senzir
-    runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: python senzir.py
+  - type: web
+    plan: free
+    name: V1
+    env: python
+    buildCommand: pip install -U -r requirements.txt
+    startCommand: python3 senzir.py
+    region: frankfurt
     envVars:
-          - key: APP_ID
-            sync: false
-          - key: API_HASH
-            sync: false
-          - key: BOT_TOKEN
-            sync: false
-          - key: ENV
-            value: ANYTHING
-          - key: STRING_SESSION
-            sync: false
+      - key: APP_ID
+        sync: false
+      - key: API_HASH
+        sync: false
+      - key: ALIVE_NAME
+        sync: false
+      - key: ENV
+        value: ANYTHING
+      - key: STRING_SESSION
+        sync: false
+      - key: TG_BOT_TOKEN
+        sync: false
+      - key: TZ
+        value: Asia/Amman
+      - key: PYTHON_VERSION
+        value: "3.11.7"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: V1
+          property: connectionString
+    autoDeploy: false
