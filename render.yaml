@@ -14,7 +14,7 @@ services:
     envVars:
       - key: APP_ID
         sync: false
-      - key: API_HASH
+      - key: APP_HASH
         sync: false
       - key: ALIVE_NAME
         sync: false
