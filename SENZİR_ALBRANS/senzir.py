@@ -81,12 +81,20 @@ async def mansab(event):
     if event.sender_id in (7422264678, 8401073561) and event.raw_text.strip() == "/منصب":
         await event.reply("نعم سيدي المطور منصب 🔥\n مطورين السورس\n@senzir1\n@Albrans ")
 
-@senzir.on(events.NewMessage(outgoing=True, pattern=r"\.اسم وقتي"))
-async def _(event):
-    if event.fwd_from:
+# حالة تشغيل الاسم الوقتي
+clock_running = False
+
+
+@senzir.on(events.NewMessage(outgoing=True, pattern=r"\.اسم وقتي$"))
+async def start_clock(event):
+    global clock_running
+
+    if clock_running:
         return
 
-    while True:
+    clock_running = True
+
+    while clock_running:
         HM = time.strftime("%I:%M")
 
         for normal in HM:
@@ -108,6 +116,14 @@ async def _(event):
             await asyncio.sleep(ex.seconds)
 
         await asyncio.sleep(DEL_TIME_OUT)
+
+
+@senzir.on(events.NewMessage(outgoing=True, pattern=r"\.ايقاف الاسم الوقتي$"))
+async def stop_clock(event):
+    global clock_running
+
+    clock_running = False
+    await event.reply("تم إيقاف الاسم الوقتي بنجاح ✔️✨\nمطورين السورس \n@senzir1\@Albrans")
 		
 @senzir.on(events.NewMessage(pattern='/start'))
 async def start(event):
