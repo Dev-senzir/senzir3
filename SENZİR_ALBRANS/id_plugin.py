@@ -18,18 +18,13 @@ def _clean_name(user):
     return "المستخدم"
 
 
-def register(client, owner_id):
+def register(client):
 
-    @client.on(
-        events.NewMessage(
-            outgoing=True,
-            pattern=r"\.(?:الايدي|id)(?:\s+(.+))?$"
-        )
-    )
+    @client.on(events.NewMessage(
+        outgoing=True,
+        pattern=r"\.(?:الايدي|id)(?:\s+(.+))?$"
+    ))
     async def get_id(event):
-        if event.sender_id != owner_id:
-            return
-
         target = event.pattern_match.group(1)
 
         if target:
@@ -78,16 +73,11 @@ def register(client, owner_id):
         )
 
 
-    @client.on(
-        events.NewMessage(
-            outgoing=True,
-            pattern=r"\.رابطه(?:\s+(.+))?$"
-        )
-    )
+    @client.on(events.NewMessage(
+        outgoing=True,
+        pattern=r"\.رابطه(?:\s+(.+))?$"
+    ))
     async def permalink(event):
-        if event.sender_id != owner_id:
-            return
-
         arg = event.pattern_match.group(1)
 
         try:
@@ -112,8 +102,7 @@ def register(client, owner_id):
                 )
                 return
 
-            name = _clean_name(user)
-            text = custom_text or name
+            text = custom_text or _clean_name(user)
 
             await event.edit(
                 f"[{text}](tg://user?id={user.id})"
@@ -125,34 +114,23 @@ def register(client, owner_id):
             )
 
 
-    @client.on(
-        events.NewMessage(
-            outgoing=True,
-            pattern=r"\.اسمي$"
-        )
-    )
+    @client.on(events.NewMessage(
+        outgoing=True,
+        pattern=r"\.اسمي$"
+    ))
     async def my_name(event):
-        if event.sender_id != owner_id:
-            return
-
         user = await client.get_me()
-        name = _clean_name(user)
 
         await event.edit(
-            f"[{name}](tg://user?id={user.id})"
+            f"[{_clean_name(user)}](tg://user?id={user.id})"
         )
 
 
-    @client.on(
-        events.NewMessage(
-            outgoing=True,
-            pattern=r"\.اسمه(?:\s+(.+))?$"
-        )
-    )
+    @client.on(events.NewMessage(
+        outgoing=True,
+        pattern=r"\.اسمه(?:\s+(.+))?$"
+    ))
     async def his_name(event):
-        if event.sender_id != owner_id:
-            return
-
         arg = event.pattern_match.group(1)
 
         try:
@@ -177,8 +155,7 @@ def register(client, owner_id):
                 )
                 return
 
-            name = _clean_name(user)
-            text = custom_text or name
+            text = custom_text or _clean_name(user)
 
             await event.edit(
                 f"[{text}](tg://user?id={user.id})"
