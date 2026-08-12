@@ -1,0 +1,12 @@
+telethon
+googletrans==3.1.0a0
+hijri_converter
+user_agent
+gitpython
+requests
+pytube
+youtube-search
+sqlalchemy
+asyncio
+
+# ©️ جميع الحقوق محفوظة لــ المطور سيــنزر 2025 ©️#
