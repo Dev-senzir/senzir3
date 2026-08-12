@@ -68,96 +68,16 @@ onersenzir_id = 7422264678
 from . import id_plugin
 id_plugin.register(senzir)
 
-LOGS = logging.getLogger(__name__)
+from . import clock
+clock.register(senzir)
 
-normzltext = "0123456789"
-namerzfont = "𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"
 
-DEL_TIME_OUT = 60
-
-###
 @senzir.on(events.NewMessage)
 async def mansab(event):
     if event.sender_id in (7422264678, 8401073561) and event.raw_text.strip() == "/منصب":
         await event.reply("نعم سيدي المطور منصب 🔥\n مطورين السورس\n@senzir1\n@Albrans ")
 
-# إعدادات الاسم الوقتي
-clock_running = False
-clock_name = "𝐄𝐋𝐄𝐒𝐘𝐄𝐃"
 
-DEL_TIME_OUT = 60
-
-normzltext = "0123456789"
-namerzfont = "𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"
-
-LOGS = logging.getLogger(__name__)
-
-
-@senzir.on(events.NewMessage(outgoing=True, pattern=r"\.اسم وقتي(?:\s+(.+))?$"))
-async def start_clock(event):
-    global clock_running, clock_name
-
-    
-    new_name = event.pattern_match.group(1)
-
-    if new_name:
-        clock_name = new_name.strip()
-
-    if clock_running:
-        return
-
-    clock_running = True
-
-    while clock_running:
-        HM = time.strftime("%I:%M")
-
-        for normal in HM:
-            if normal in normzltext:
-                namefont = namerzfont[normzltext.index(normal)]
-                HM = HM.replace(normal, namefont)
-
-        name = f"{clock_name} | {HM}"
-
-        LOGS.info(name)
-
-        try:
-            await senzir(
-                functions.account.UpdateProfileRequest(
-                    first_name=name
-                )
-            )
-
-        except FloodWaitError as ex:
-            LOGS.warning(str(ex))
-            await asyncio.sleep(ex.seconds)
-
-        await asyncio.sleep(DEL_TIME_OUT)
-
-
-@senzir.on(events.NewMessage(outgoing=True, pattern=r"\.ايقاف الاسم الوقتي$"))
-async def stop_clock(event):
-    global clock_running, original_name
-
-    clock_running = False
-
-    if original_name is not None:
-        try:
-            await senzir(
-                functions.account.UpdateProfileRequest(
-                    first_name=original_name
-                )
-            )
-        except FloodWaitError as ex:
-            LOGS.warning(str(ex))
-            await asyncio.sleep(ex.seconds)
-
-    await event.edit("===SOURCE SENZİR & ALBRANS===\nتم ايقاف الاسم الوقتي بنجـاح ✔️🔥\nمطوري السورس\n✨ @senzir1 ✨\n✨ @Albrans ✨")
-    await asyncio.sleep(20)
-
-    try:
-        await event.delete()
-    except Exception:
-        pass
 		
 @senzir.on(events.NewMessage(pattern='/start'))
 async def start(event):
