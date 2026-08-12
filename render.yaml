@@ -9,7 +9,7 @@ services:
     name: V1
     env: python
     buildCommand: pip install -U -r requirements.txt
-    startCommand: python3 -m SENZİR_ALBRANS
+    startCommand: python3 SENZİR_ALBRANS
     region: frankfurt
     envVars:
       - key: APP_ID
