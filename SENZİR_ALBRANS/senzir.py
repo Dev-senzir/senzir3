@@ -81,13 +81,27 @@ async def mansab(event):
     if event.sender_id in (7422264678, 8401073561) and event.raw_text.strip() == "/منصب":
         await event.reply("نعم سيدي المطور منصب 🔥\n مطورين السورس\n@senzir1\n@Albrans ")
 
-# حالة تشغيل الاسم الوقتي
+# إعدادات الاسم الوقتي
 clock_running = False
+clock_name = "𝐄𝐋𝐄𝐒𝐘𝐄𝐃"
+
+DEL_TIME_OUT = 60
+
+normzltext = "0123456789"
+namerzfont = "𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"
+
+LOGS = logging.getLogger(__name__)
 
 
-@senzir.on(events.NewMessage(outgoing=True, pattern=r"\.اسم وقتي$"))
+@senzir.on(events.NewMessage(outgoing=True, pattern=r"\.اسم وقتي(?:\s+(.+))?$"))
 async def start_clock(event):
-    global clock_running
+    global clock_running, clock_name
+
+    
+    new_name = event.pattern_match.group(1)
+
+    if new_name:
+        clock_name = new_name.strip()
 
     if clock_running:
         return
@@ -102,7 +116,8 @@ async def start_clock(event):
                 namefont = namerzfont[normzltext.index(normal)]
                 HM = HM.replace(normal, namefont)
 
-        name = f"𝐄𝐋𝐄𝐒𝐘𝐄𝐃 | {HM}"
+        name = f"{clock_name} | {HM}"
+
         LOGS.info(name)
 
         try:
@@ -111,6 +126,7 @@ async def start_clock(event):
                     first_name=name
                 )
             )
+
         except FloodWaitError as ex:
             LOGS.warning(str(ex))
             await asyncio.sleep(ex.seconds)
@@ -118,12 +134,19 @@ async def start_clock(event):
         await asyncio.sleep(DEL_TIME_OUT)
 
 
-@senzir.on(events.NewMessage(outgoing=True, pattern=r"\.ايقاف الاسم الوقتي$"))
+@senzir.on(events.NewMessage(
+    outgoing=True,
+    pattern=r"\.ايقاف الاسم الوقتي$"
+))
 async def stop_clock(event):
     global clock_running
 
     clock_running = False
-    await event.reply("تم إيقاف الاسم الوقتي بنجاح ✔️✨\nمطورين السورس \n@senzir1\@Albrans")
+
+    await event.edit("===SOURCE SENZİR & ALBRANS===\nتم ايقاف الاسم الوقتي بنجـاح ✔️🔥\nمطوري السورس\n✨ @senzir1 ✨\n✨ @Albrans ✨")
+
+    await asyncio.sleep(15)
+    await event.delete()
 		
 @senzir.on(events.NewMessage(pattern='/start'))
 async def start(event):
