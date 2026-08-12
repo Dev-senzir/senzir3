@@ -71,6 +71,9 @@ id_plugin.register(senzir)
 from . import clock
 clock.register(senzir)
 
+from . import avamer
+avamer.register(senzir)
+
 
 @senzir.on(events.NewMessage)
 async def mansab(event):
