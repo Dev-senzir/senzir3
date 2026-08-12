@@ -1,10 +1,10 @@
 import asyncio
 import logging
 import time
-
+## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
 from telethon import events, functions
 from telethon.errors import FloodWaitError
-
+## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
 
 def register(senzir):
     clock_running = False
@@ -12,12 +12,12 @@ def register(senzir):
     original_name = None
 
     DEL_TIME_OUT = 60
-
+## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
     normzltext = "0123456789"
     namerzfont = "𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"
 
     LOGS = logging.getLogger(__name__)
-
+## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
     @senzir.on(
         events.NewMessage(
             outgoing=True,
@@ -48,7 +48,7 @@ def register(senzir):
 
         clock_running = True
 
-        # تعديل نفس رسالة الأمر ثم حذفها بعد 15 ثانية.
+        ## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
         await event.edit("تم تشغيل بنجاح")
         await asyncio.sleep(15)
         try:
@@ -119,3 +119,4 @@ def register(senzir):
 
         original_name = None
         clock_name = "𝐄𝐋𝐄𝐒𝐘𝐄𝐃"
+        ## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
