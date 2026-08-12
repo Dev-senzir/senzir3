@@ -81,18 +81,22 @@ async def mansab(event):
     if event.sender_id in (7422264678, 8401073561) and event.raw_text.strip() == "/منصب":
         await event.reply("نعم سيدي المطور منصب 🔥\n مطورين السورس\n@senzir1\n@Albrans ")
 
-@senzir.on(events.NewMessage(outgoing=True, pattern=".اسم وقتي"))
+@senzir.on(events.NewMessage(outgoing=True, pattern=r"\.اسم وقتي"))
 async def _(event):
     if event.fwd_from:
         return
+
     while True:
         HM = time.strftime("%I:%M")
+
         for normal in HM:
             if normal in normzltext:
                 namefont = namerzfont[normzltext.index(normal)]
                 HM = HM.replace(normal, namefont)
+
         name = f"𝐄𝐋𝐄𝐒𝐘𝐄𝐃 | {HM}"
         LOGS.info(name)
+
         try:
             await senzir(
                 functions.account.UpdateProfileRequest(
@@ -100,8 +104,9 @@ async def _(event):
                 )
             )
         except FloodWaitError as ex:
-            LOGS.warning(str(e))
+            LOGS.warning(str(ex))
             await asyncio.sleep(ex.seconds)
+
         await asyncio.sleep(DEL_TIME_OUT)
 		
 @senzir.on(events.NewMessage(pattern='/start'))
