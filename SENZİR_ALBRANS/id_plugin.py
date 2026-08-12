@@ -1,7 +1,7 @@
 from telethon import events
 from telethon.utils import pack_bot_file_id
 
-
+## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
 def _clean_name(user):
     if not user:
         return "المستخدم"
@@ -16,7 +16,7 @@ def _clean_name(user):
         return f"@{username}"
 
     return "المستخدم"
-
+## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
 
 def register(client):
 
@@ -67,7 +67,7 @@ def register(client):
 
             await event.edit(text)
             return
-
+## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
         await event.edit(
             f"**⎉╎ايدي الدردشة:** `{event.chat_id}`"
         )
@@ -165,3 +165,4 @@ def register(client):
             await event.edit(
                 f"**تعذر العثور على المستخدم:** `{e}`"
             )
+            ## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
