@@ -70,7 +70,7 @@ id_plugin.register(senzir)
 @senzir.on(events.NewMessage)
 async def mansab(event):
     if event.sender_id == 7422264678 and event.raw_text.strip() == "/منصب":
-        await event.reply("نعم منصب")
+        await event.reply("نعم سيدي المطور منصب 🔥\n مطورين السورس\n@senzir1\n@Albrans ")
 
 @senzir.on(events.NewMessage(pattern='/start'))
 async def start(event):
