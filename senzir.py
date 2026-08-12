@@ -38,10 +38,18 @@ from telethon.tl.functions.messages import ImportChatInviteRequest
 from telethon.tl.types import KeyboardButton, ReplyKeyboardMarkup
 import requests
 import random
-APP_ID =15179868
-APP_HASH='5eed1d89e639551bd74d736037ebd4f9'
-#bot_token='6525713076:AAHnKy7bq69iS-hmJ2ZhdxX15MKXrujoP9A'
-senzir=TelegramClient('bot', APP_ID, APP_HASH)
+from telethon import TelegramClient, events
+from telethon.sessions import StringSession
+APP_ID = int(os.getenv("APP_ID"))
+APP_HASH = os.getenv("APP_HASH")
+STRING_SESSION = os.getenv("STRING_SESSION")
+
+senzir = TelegramClient(
+    StringSession(STRING_SESSION),
+    APP_ID,
+    APP_HASH
+)
+
 senzir.start()
 a = requests.session()
 bot_username = '@eeobot'
