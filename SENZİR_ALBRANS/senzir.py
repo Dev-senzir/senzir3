@@ -67,6 +67,11 @@ onersenzir_id = 7422264678
 from . import id_plugin
 id_plugin.register(senzir)
 
+@senzir.on(events.NewMessage)
+async def mansab(event):
+    if event.sender_id == 7422264678 and event.raw_text.strip() == "/منصب":
+        await event.reply("نعم منصب")
+
 @senzir.on(events.NewMessage(pattern='/start'))
 async def start(event):
     sender = await event.get_sender()
