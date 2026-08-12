@@ -68,6 +68,14 @@ onersenzir_id = 7422264678
 from . import id_plugin
 id_plugin.register(senzir)
 
+LOGS = logging.getLogger(__name__)
+
+normzltext = "0123456789"
+namerzfont = "𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"
+
+DEL_TIME_OUT = 60
+
+###
 @senzir.on(events.NewMessage)
 async def mansab(event):
     if event.sender_id in (7422264678, 8401073561) and event.raw_text.strip() == "/منصب":
