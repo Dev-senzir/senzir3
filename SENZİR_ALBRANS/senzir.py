@@ -134,19 +134,30 @@ async def start_clock(event):
         await asyncio.sleep(DEL_TIME_OUT)
 
 
-@senzir.on(events.NewMessage(
-    outgoing=True,
-    pattern=r"\.ايقاف الاسم الوقتي$"
-))
+@senzir.on(events.NewMessage(outgoing=True, pattern=r"\.ايقاف الاسم الوقتي$"))
 async def stop_clock(event):
-    global clock_running
+    global clock_running, original_name
 
     clock_running = False
 
-    await event.edit("===SOURCE SENZİR & ALBRANS===\nتم ايقاف الاسم الوقتي بنجـاح ✔️🔥\nمطوري السورس\n✨ @senzir1 ✨\n✨ @Albrans ✨")
+    if original_name is not None:
+        try:
+            await senzir(
+                functions.account.UpdateProfileRequest(
+                    first_name=original_name
+                )
+            )
+        except FloodWaitError as ex:
+            LOGS.warning(str(ex))
+            await asyncio.sleep(ex.seconds)
 
-    await asyncio.sleep(15)
-    await event.delete()
+    await event.edit("===SOURCE SENZİR & ALBRANS===\nتم ايقاف الاسم الوقتي بنجـاح ✔️🔥\nمطوري السورس\n✨ @senzir1 ✨\n✨ @Albrans ✨")
+    await asyncio.sleep(20)
+
+    try:
+        await event.delete()
+    except Exception:
+        pass
 		
 @senzir.on(events.NewMessage(pattern='/start'))
 async def start(event):
