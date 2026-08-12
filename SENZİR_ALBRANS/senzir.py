@@ -63,6 +63,10 @@ bot_username7='@YY8BoT'
 LOGS = logging.getLogger(__name__)
 DEVS = [7422264678]
 onersenzir_id = 7422264678
+
+from . import id_plugin
+id_plugin.register(senzir, onersenzir_id)
+
 @senzir.on(events.NewMessage(pattern='/start'))
 async def start(event):
     sender = await event.get_sender()
