@@ -75,7 +75,7 @@ from . import avamer
 avamer.register(senzir)
 
 from . import procetion
-proceton.register(senzir)
+procetion.register(senzir)
 
 
 @senzir.on(events.NewMessage)
