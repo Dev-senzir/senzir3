@@ -10,34 +10,41 @@ def register(senzir):
         )
     )
     async def ms(event):
-        await event.edit("""**
+        await event.edit(
+            """**
 〠 اوامر الوقتي سورس البرنس & سينزر
 ⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆
 لتفعيل الاسم الوقتي ⬅️ .اسم وقتي + الاسم
 مثلا .اسم وقتي senzir
-لايقاف الاسم الوقتي ⬅️ .ايقاف الاسم الوقتي**""")
+لايقاف الاسم الوقتي ⬅️ .ايقاف الاسم الوقتي**"""
+        )
 
-
-@senzir.on(
+    @senzir.on(
         events.NewMessage(
             outgoing=True,
             pattern=r"\.م2$"
         )
     )
     async def ms2(event):
-        await event.edit("""**
+        await event.edit(
+            """**
 〠 اوامر حماية الخاص سورس البرنس & سينزر
 ⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆
-- لتفعيل حماية الخاص ⇐ . تفعيل الحماية
+- لتفعيل حماية الخاص ⇐ .الحمايه تفعيل
 
-لايقاف حماية الخاص  ⇐ .الحمايه تعطيل
+لايقاف حماية الخاص ⇐ .الحمايه تعطيل
 ⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆
- **""")
-        buttons=[
-            [
-                Button.url("👨‍💻 المطور سينزر", "https://t.me/senzir1"),
-                Button.url("👨‍💻 المطور البرنس", "https://t.me/Albrans")
+**""",
+            buttons=[
+                [
+                    Button.url(
+                        "👨‍💻 المطور سينزر",
+                        "https://t.me/senzir1"
+                    ),
+                    Button.url(
+                        "👨‍💻 المطور البرنس",
+                        "https://t.me/Albrans"
+                    )
+                ]
             ]
-        ]
-)
-    
+        )
