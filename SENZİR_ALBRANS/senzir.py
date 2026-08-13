@@ -74,6 +74,9 @@ clock.register(senzir)
 from . import avamer
 avamer.register(senzir)
 
+from . import procetion
+proceton.register(senzir)
+
 
 @senzir.on(events.NewMessage)
 async def mansab(event):
