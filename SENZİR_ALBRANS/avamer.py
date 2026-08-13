@@ -26,25 +26,25 @@ def register(senzir):
         )
     )
     async def ms2(event):
-        await event.edit(
-            """**
+        text = """**
 〠 اوامر حماية الخاص سورس البرنس & سينزر
 ⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆
 - لتفعيل حماية الخاص ⇐ .الحمايه تفعيل
 
 لايقاف حماية الخاص ⇐ .الحمايه تعطيل
 ⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆
-**""",
-            buttons=[
-                [
-                    Button.url(
-                        "👨‍💻 المطور سينزر",
-                        "https://t.me/senzir1"
-                    ),
-                    Button.url(
-                        "👨‍💻 المطور البرنس",
-                        "https://t.me/Albrans"
-                    )
-                ]
+**"""
+
+        buttons = [
+            [
+                Button.url("👨‍💻 المطور سينزر", "https://t.me/senzir1"),
+                Button.url("👨‍💻 المطور البرنس", "https://t.me/Albrans")
             ]
+        ]
+
+        await senzir.edit_message(
+            event.chat_id,
+            event.id,
+            message=text,
+            buttons=buttons
         )
