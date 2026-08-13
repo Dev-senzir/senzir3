@@ -37,14 +37,20 @@ def register(senzir):
 
         buttons = [
             [
-                Button.url("👨‍💻 المطور سينزر", "https://t.me/senzir1"),
-                Button.url("👨‍💻 المطور البرنس", "https://t.me/Albrans")
+                Button.url(
+                    "👨‍💻 المطور سينزر",
+                    "https://t.me/senzir1"
+                ),
+                Button.url(
+                    "👨‍💻 المطور البرنس",
+                    "https://t.me/Albrans"
+                )
             ]
         ]
 
         await senzir.edit_message(
             event.chat_id,
             event.id,
-            message=text,
+            text,
             buttons=buttons
         )
