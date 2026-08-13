@@ -167,14 +167,16 @@ async def _unblock_user(event, user):
 
 
 async def _private_protection(event):
-    if not state["enabled"]:
+    if not state.get("enabled", False):
         return
 
-    if not event.is_private or not event.incoming:
+    try:
+        user = await event.get_sender()
+    except Exception as e:
+        LOGS.exception("تعذر جلب مرسل رسالة الخاص: %s", e)
         return
 
-    user = await event.get_sender()
-    if not user or getattr(user, "bot", False):
+    if user is None or getattr(user, "bot", False):
         return
 
     uid = str(user.id)
@@ -246,7 +248,23 @@ def register(senzir):
 
     @senzir.on(events.NewMessage(incoming=True))
     async def pm_protection_handler(event):
-        await _private_protection(event)
+        try:
+            if not state.get("enabled", False):
+                return
+            if not event.is_private:
+                return
+            user = await event.get_sender()
+            if user is None or getattr(user, "bot", False):
+                return
+            if _approved(user.id) or _temp_approved(user.id):
+                return
+            await _private_protection(event)
+        except Exception as e:
+            LOGS.exception(
+                "خطأ في هاندلر حماية الخاص | chat_id=%s | error=%s",
+                getattr(event, "chat_id", None),
+                e,
+            )
 
     @senzir.on(
         events.NewMessage(
