@@ -1,4 +1,4 @@
-from telethon import events
+from telethon import Button, events
 
 
 def register(senzir):
@@ -16,3 +16,28 @@ def register(senzir):
 لتفعيل الاسم الوقتي ⬅️ .اسم وقتي + الاسم
 مثلا .اسم وقتي senzir
 لايقاف الاسم الوقتي ⬅️ .ايقاف الاسم الوقتي**""")
+
+
+@senzir.on(
+        events.NewMessage(
+            outgoing=True,
+            pattern=r"\.م2$"
+        )
+    )
+    async def ms2(event):
+        await event.edit("""**
+〠 اوامر حماية الخاص سورس البرنس & سينزر
+⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆
+- لتفعيل حماية الخاص ⇐ . تفعيل الحماية
+
+لايقاف حماية الخاص  ⇐ .الحمايه تعطيل
+⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆
+ **""")
+        buttons=[
+            [
+                Button.url("👨‍💻 المطور سينزر", "https://t.me/senzir1"),
+                Button.url("👨‍💻 المطور البرنس", "https://t.me/Albrans")
+            ]
+        ]
+)
+    
