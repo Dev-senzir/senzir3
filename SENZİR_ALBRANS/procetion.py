@@ -18,6 +18,7 @@ DATA_FILE = os.path.join(
 MAX_FLOOD_IN_PMS = int(os.getenv("MAX_FLOOD_IN_PMS", "6"))
 BOTLOG_CHATID = os.getenv("BOTLOG_CHATID")
 
+# حالات الحماية داخل هذا الحساب
 state = {
     "enabled": False,
     "pmwarns": {},
@@ -88,7 +89,7 @@ async def _get_target(event, text):
         except Exception:
             pass
 
-   
+    # معرف أو ID داخل الأمر
     value = (text or "").strip()
     if not value:
         if event.is_private:
