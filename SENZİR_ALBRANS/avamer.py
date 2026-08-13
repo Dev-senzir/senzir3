@@ -20,18 +20,24 @@ def register(senzir):
         )
 
     @senzir.on(
-    events.NewMessage(
-        outgoing=True,
-        pattern=r"\.م2$"
+        events.NewMessage(
+            outgoing=True,
+            pattern=r"\.م2$"
+        )
     )
-)
-async def ms2(event):
-    await event.edit(
-        "اختبار الأزرار",
-        buttons=[
-            [
-                Button.url("سينزر", "https://t.me/senzir1"),
-                Button.url("البرنس", "https://t.me/Albrans")
+    async def ms2(event):
+        await event.edit(
+            "اختبار الأزرار",
+            buttons=[
+                [
+                    Button.url(
+                        "سينزر",
+                        "https://t.me/senzir1"
+                    ),
+                    Button.url(
+                        "البرنس",
+                        "https://t.me/Albrans"
+                    )
+                ]
             ]
-        ]
-    )
+        )
