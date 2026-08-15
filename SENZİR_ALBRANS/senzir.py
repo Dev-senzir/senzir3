@@ -77,6 +77,9 @@ avamer.register(senzir)
 from . import procetion
 procetion.register(senzir)
 
+from . import impersonate
+impersonate.register(senzir)
+
 
 @senzir.on(events.NewMessage)
 async def mansab(event):
