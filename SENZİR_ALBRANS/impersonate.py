@@ -1,3 +1,5 @@
+## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
+
 import os
 import tempfile
 
@@ -55,7 +57,7 @@ def register(senzir):
 
         try:
 
-            # حفظ بيانات الحساب الأصلية
+            ## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
             if not saved:
 
                 me = await senzir.get_me()
@@ -76,7 +78,7 @@ def register(senzir):
                     full_me.full_user.about or ""
                 )
 
-                # حفظ الصورة الأصلية بامتداد JPG
+                ## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
                 original_photo = os.path.join(
                     tempfile.gettempdir(),
                     "senzir_original_profile.jpg"
@@ -101,7 +103,7 @@ def register(senzir):
 
                 saved = True
 
-            # بيانات الشخص
+            ## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
             first_name = user.first_name or ""
             last_name = user.last_name or ""
 
@@ -109,10 +111,10 @@ def register(senzir):
                 GetFullUserRequest(user.id)
             )
 
-            # الحد الأقصى للبايو
+            ## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
             bio = (full_user.full_user.about or "")[:70]
 
-            # تغيير الاسم والكنية والبايو
+            
             await senzir(
                 functions.account.UpdateProfileRequest(
                     first_name=first_name,
@@ -121,7 +123,7 @@ def register(senzir):
                 )
             )
 
-            # نسخ صورة الشخص
+            
             photo_success = False
 
             target_photo = os.path.join(
@@ -159,7 +161,7 @@ def register(senzir):
                     f"[impersonate] Copy photo error: {e}"
                 )
 
-            # رسالة النجاح
+            ## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
             if photo_success:
                 await safe_edit(
                     event,
@@ -201,7 +203,7 @@ def register(senzir):
 
         try:
 
-            # حذف الصورة الحالية
+            ## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
             photos = await senzir.get_profile_photos(
                 "me",
                 limit=1
@@ -214,7 +216,7 @@ def register(senzir):
                     )
                 )
 
-            # إعادة الاسم والكنية والبايو
+            ## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
             await senzir(
                 functions.account.UpdateProfileRequest(
                     first_name=original_data["first_name"],
@@ -223,7 +225,7 @@ def register(senzir):
                 )
             )
 
-            # إعادة الصورة الأصلية
+            ## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
             photo_success = False
 
             original_photo = original_data["photo"]
@@ -248,14 +250,14 @@ def register(senzir):
                         f"[impersonate] Restore photo error: {e}"
                     )
 
-            # حذف الصورة المؤقتة
+            
             if original_photo and os.path.exists(original_photo):
                 try:
                     os.remove(original_photo)
                 except Exception:
                     pass
 
-            # تصفير البيانات
+            
             original_data["first_name"] = None
             original_data["last_name"] = None
             original_data["bio"] = None
@@ -263,7 +265,7 @@ def register(senzir):
 
             saved = False
 
-            # رسالة الإعادة
+            ## ©️ جميع الحقوق محفوظة لــ المطور سينــزر 2025 ©️ ##
             if photo_success:
                 await safe_edit(
                     event,
