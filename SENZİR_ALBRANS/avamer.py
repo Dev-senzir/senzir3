@@ -1,6 +1,7 @@
 from telethon import events
 
-
+#𝗦𝗘𝗡𝗭𝗜𝗥
+#𓆩 𝗔𝗟𝗕𝗥𝗔𝗡𝗦 𓆪
 def register(senzir):
 
     @senzir.on(
