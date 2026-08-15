@@ -41,3 +41,25 @@ def register(senzir):
 **""",
             parse_mode="md"
         )
+
+    @senzir.on(
+        events.NewMessage(
+            outgoing=True,
+            pattern=r"\.م3$"
+        )
+    )
+    async def ms3(event):
+        await event.edit(
+            """**
+〠 اوامر الانتحال الخاص سورس البرنس & سينزر
+⋆┄─┄─┄─┄┄─┄─┄─┄┄⋆
+- لــ الانتـحال ⇐ {.انتحال } بلرد ع مستخدم المراد انتحاله
+
+لاعاده الحساب لوضعه الطبيعي ⇐ .اعادة 
+⋆┄─┄─┄─┄┄─┄─┄─┄┄⋆
+
+👨‍💻 [𓆩 𝗦𝗘𝗡𝗭𝗜𝗥 𓆪](https://t.me/senzir1)
+👨‍💻 [𓆩 𝗔𝗟𝗕𝗥𝗔𝗡𝗦 𓆪](https://t.me/Albrans)
+**""",
+            parse_mode="md"
+        )
