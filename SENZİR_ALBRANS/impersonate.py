@@ -1,3 +1,6 @@
+import os
+import tempfile
+
 from telethon import events
 from telethon.tl import functions
 from telethon.tl.functions.users import GetFullUserRequest
@@ -18,6 +21,12 @@ def register(senzir):
 
     saved = False
 
+    async def safe_edit(event, text):
+        try:
+            await event.edit(text)
+        except Exception as e:
+            print(f"[impersonate] Edit error: {e}")
+
     @senzir.on(
         events.NewMessage(
             outgoing=True,
@@ -25,10 +34,12 @@ def register(senzir):
         )
     )
     async def impersonate(event):
+
         nonlocal saved
 
         if not event.is_reply:
-            await event.edit(
+            await safe_edit(
+                event,
                 "**يجب الرد على شخص لاستخدام هذا الأمر.**"
             )
             return
@@ -37,73 +48,172 @@ def register(senzir):
         user = await replied.get_sender()
 
         if not user:
-            await event.edit(
+            await safe_edit(
+                event,
                 "**تعذر العثور على الشخص.**"
             )
             return
 
-        # حفظ بيانات الحساب الأصلية
-        if not saved:
-            me = await senzir.get_me()
+        try:
 
-            original_data["first_name"] = me.first_name or ""
-            original_data["last_name"] = me.last_name or ""
+            # ==========================================
+            # حفظ بيانات الحساب الأصلية
+            # ==========================================
 
-            full_me = await senzir(
-                GetFullUserRequest("me")
-            )
+            if not saved:
 
-            original_data["bio"] = (
-                full_me.full_user.about or ""
-            )
+                me = await senzir.get_me()
 
-            original_data["photo"] = (
-                await senzir.download_profile_photo(
-                    "me",
-                    file=bytes
+                original_data["first_name"] = (
+                    me.first_name or ""
                 )
+
+                original_data["last_name"] = (
+                    me.last_name or ""
+                )
+
+                full_me = await senzir(
+                    GetFullUserRequest("me")
+                )
+
+                original_data["bio"] = (
+                    full_me.full_user.about or ""
+                )
+
+                # حفظ صورة الحساب الأصلية
+                original_photo = os.path.join(
+                    tempfile.gettempdir(),
+                    "senzir_original_profile"
+                )
+
+                try:
+
+                    photo_path = await senzir.download_profile_photo(
+                        "me",
+                        file=original_photo
+                    )
+
+                    if photo_path and os.path.exists(photo_path):
+                        original_data["photo"] = photo_path
+                    else:
+                        original_data["photo"] = None
+
+                except Exception as e:
+
+                    print(
+                        f"[impersonate] Save original photo error: {e}"
+                    )
+
+                    original_data["photo"] = None
+
+                saved = True
+
+            # ==========================================
+            # بيانات الشخص
+            # ==========================================
+
+            first_name = user.first_name or ""
+            last_name = user.last_name or ""
+
+            full_user = await senzir(
+                GetFullUserRequest(user.id)
             )
 
-            saved = True
+            bio = (
+                full_user.full_user.about or ""
+            )[:70]
 
-        # بيانات الشخص
-        first_name = user.first_name or ""
-        last_name = user.last_name or ""
-
-        full_user = await senzir(
-            GetFullUserRequest(user.id)
-        )
-
-        # الحد الأقصى للبايو
-        bio = (full_user.full_user.about or "")[:70]
-
-        # تغيير الاسم والكنية والبايو
-        await senzir(
-            functions.account.UpdateProfileRequest(
-                first_name=first_name,
-                last_name=last_name,
-                about=bio
-            )
-        )
-
-        # نسخ الصورة
-        photo = await senzir.download_profile_photo(
-            user,
-            file=bytes
-        )
-
-        if photo:
-            uploaded = await senzir.upload_file(photo)
+            # ==========================================
+            # تغيير الاسم والكنية والبايو
+            # ==========================================
 
             await senzir(
-                UploadProfilePhotoRequest(
-                    file=uploaded
+                functions.account.UpdateProfileRequest(
+                    first_name=first_name,
+                    last_name=last_name,
+                    about=bio
                 )
             )
 
-        await event.edit(
-            "**𓆰 تم انتحال الشخص بنجاح ✅**"
-        )
+            # ==========================================
+            # نسخ صورة الشخص
+            # ==========================================
+
+            photo_success = False
+
+            try:
+
+                target_dir = tempfile.mkdtemp(
+                    prefix="senzir_target_"
+                )
+
+                photo_path = await senzir.download_profile_photo(
+                    user,
+                    file=target_dir
+                )
+
+                if photo_path and os.path.exists(photo_path):
+
+                    uploaded = await senzir.upload_file(
+                        photo_path
+                    )
+
+                    await senzir(
+                        UploadProfilePhotoRequest(
+                            file=uploaded
+                        )
+                    )
+
+                    photo_success = True
+
+                # حذف الملف المؤقت
+                if photo_path and os.path.exists(photo_path):
+                    try:
+                        os.remove(photo_path)
+                    except Exception:
+                        pass
+
+                try:
+                    os.rmdir(target_dir)
+                except Exception:
+                    pass
+
+            except Exception as e:
+
+                print(
+                    f"[impersonate] Copy photo error: {e}"
+                )
+
+            # ==========================================
+            # رسالة النجاح
+            # ==========================================
+
+            if photo_success:
+
+                await safe_edit(
+                    event,
+                    "**𓆰 تم انتحال الشخص بنجاح ✅**"
+                )
+
+            else:
+
+                await safe_edit(
+                    event,
+                    "**𓆰 تم انتحال الاسم والبايو بنجاح ✅**\n"
+                    "**⚠️ تعذر نسخ صورة الحساب.**"
+                )
+
+        except Exception as e:
+
+            print(
+                f"[impersonate] Impersonate error: {e}"
+            )
+
+            await safe_edit(
+                event,
+                f"**حدث خطأ أثناء الانتحال ❌**\n`{e}`"
+            )
+
 
     @senzir.on(
         events.NewMessage(
@@ -112,56 +222,131 @@ def register(senzir):
         )
     )
     async def revert(event):
+
         nonlocal saved
 
         if not saved:
-            await event.edit(
+
+            await safe_edit(
+                event,
                 "**لا توجد بيانات محفوظة لإعادة الحساب.**"
             )
+
             return
 
-        # حذف الصورة الحالية
-        photos = await senzir.get_profile_photos(
-            "me",
-            limit=1
-        )
+        try:
 
-        if photos:
+            # ==========================================
+            # حذف الصورة الحالية
+            # ==========================================
+
+            photos = await senzir.get_profile_photos(
+                "me",
+                limit=1
+            )
+
+            if photos:
+
+                await senzir(
+                    DeletePhotosRequest(
+                        id=[photos[0]]
+                    )
+                )
+
+            # ==========================================
+            # إعادة الاسم والكنية والبايو
+            # ==========================================
+
             await senzir(
-                DeletePhotosRequest(
-                    id=[photos[0]]
+                functions.account.UpdateProfileRequest(
+                    first_name=original_data["first_name"],
+                    last_name=original_data["last_name"],
+                    about=original_data["bio"]
                 )
             )
 
-        # إعادة الاسم والكنية والبايو
-        await senzir(
-            functions.account.UpdateProfileRequest(
-                first_name=original_data["first_name"],
-                last_name=original_data["last_name"],
-                about=original_data["bio"]
-            )
-        )
+            # ==========================================
+            # إعادة الصورة الأصلية
+            # ==========================================
 
-        # إعادة الصورة الأصلية
-        if original_data["photo"]:
-            uploaded = await senzir.upload_file(
-                original_data["photo"]
-            )
+            photo_success = False
 
-            await senzir(
-                UploadProfilePhotoRequest(
-                    file=uploaded
+            original_photo = original_data["photo"]
+
+            if original_photo and os.path.exists(
+                original_photo
+            ):
+
+                try:
+
+                    uploaded = await senzir.upload_file(
+                        original_photo
+                    )
+
+                    await senzir(
+                        UploadProfilePhotoRequest(
+                            file=uploaded
+                        )
+                    )
+
+                    photo_success = True
+
+                except Exception as e:
+
+                    print(
+                        f"[impersonate] Restore photo error: {e}"
+                    )
+
+            # ==========================================
+            # حذف الملف المؤقت
+            # ==========================================
+
+            if original_photo and os.path.exists(
+                original_photo
+            ):
+
+                try:
+                    os.remove(original_photo)
+                except Exception:
+                    pass
+
+            # ==========================================
+            # تصفير البيانات
+            # ==========================================
+
+            original_data["first_name"] = None
+            original_data["last_name"] = None
+            original_data["bio"] = None
+            original_data["photo"] = None
+
+            saved = False
+
+            # ==========================================
+            # رسالة النجاح
+            # ==========================================
+
+            if photo_success:
+
+                await safe_edit(
+                    event,
+                    "**𓆰 تمت إعادة الحساب لوضعه الأصلي بنجاح ✅**"
                 )
+
+            else:
+
+                await safe_edit(
+                    event,
+                    "**𓆰 تمت إعادة الاسم والبايو بنجاح ✅**\n"
+                    "**⚠️ تعذر إعادة صورة الحساب.**"
+                )
+
+        except Exception as e:
+
+            print(
+                f"[impersonate] Revert error: {e}"
             )
 
-        # تصفير البيانات
-        original_data["first_name"] = None
-        original_data["last_name"] = None
-        original_data["bio"] = None
-        original_data["photo"] = None
-
-        saved = False
-
-        await event.edit(
-            "**𓆰 تمت إعادة الحساب لوضعه الأصلي ✅**"
-        )
+            await safe_edit(
+                event,
+                f"**حدث خطأ أثناء إعادة الحساب ❌**\n`{e}`"
+            )
