@@ -19,7 +19,7 @@ def register(senzir):
 لايقاف الاسم الوقتي ⬅️ .ايقاف الاسم الوقتي**"""
         )
 
-    @senzir.on(
+@senzir.on(
         events.NewMessage(
             outgoing=True,
             pattern=r"\.م2$"
@@ -27,17 +27,16 @@ def register(senzir):
     )
     async def ms2(event):
         await event.edit(
-            "اختبار الأزرار",
-            buttons=[
-                [
-                    Button.url(
-                        "سينزر",
-                        "https://t.me/senzir1"
-                    ),
-                    Button.url(
-                        "البرنس",
-                        "https://t.me/Albrans"
-                    )
-                ]
-            ]
+            """**
+〠 اوامر حماية الخاص سورس البرنس & سينزر
+⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆
+- لتفعيل حماية الخاص ⇐ .الحمايه تفعيل
+
+لايقاف حماية الخاص ⇐ .الحمايه تعطيل
+⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆
+
+👨‍💻 [المطور سينزر](https://t.me/senzir1)
+👨‍💻 [المطور البرنس](https://t.me/Albrans)
+**""",
+            parse_mode="md"
         )
