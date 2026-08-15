@@ -1,4 +1,4 @@
-from telethon import Button, events
+from telethon import events
 
 
 def register(senzir):
@@ -16,10 +16,11 @@ def register(senzir):
 ⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆
 لتفعيل الاسم الوقتي ⬅️ .اسم وقتي + الاسم
 مثلا .اسم وقتي senzir
-لايقاف الاسم الوقتي ⬅️ .ايقاف الاسم الوقتي**"""
+لايقاف الاسم الوقتي ⬅️ .ايقاف الاسم الوقتي**""",
+            parse_mode="md"
         )
 
-@senzir.on(
+    @senzir.on(
         events.NewMessage(
             outgoing=True,
             pattern=r"\.م2$"
@@ -29,11 +30,11 @@ def register(senzir):
         await event.edit(
             """**
 〠 اوامر حماية الخاص سورس البرنس & سينزر
-⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆
+⋆┄─┄─┄─┄┄─┄─┄─┄┄⋆
 - لتفعيل حماية الخاص ⇐ .الحمايه تفعيل
 
 لايقاف حماية الخاص ⇐ .الحمايه تعطيل
-⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆
+⋆┄─┄─┄─┄┄─┄─┄─┄┄⋆
 
 👨‍💻 [المطور سينزر](https://t.me/senzir1)
 👨‍💻 [المطور البرنس](https://t.me/Albrans)
