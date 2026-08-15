@@ -1,7 +1,10 @@
 from telethon import events
 from telethon.tl import functions
 from telethon.tl.functions.users import GetFullUserRequest
-from telethon.tl.functions.photos import UploadProfilePhotoRequest, DeletePhotosRequest
+from telethon.tl.functions.photos import (
+    UploadProfilePhotoRequest,
+    DeletePhotosRequest,
+)
 
 
 def register(senzir):
@@ -26,7 +29,6 @@ def register(senzir):
 
         nonlocal saved
 
-        # يجب أن يكون الأمر ردًا على شخص
         if not event.is_reply:
             return await event.edit(
                 "**يجب الرد على شخص لاستخدام هذا الأمر.**"
@@ -40,7 +42,7 @@ def register(senzir):
                 "**تعذر العثور على الشخص.**"
             )
 
-        # حفظ بيانات حسابك الأصلية مرة واحدة
+        # حفظ بيانات الحساب الأصلية مرة واحدة
         if not saved:
             me = await senzir.get_me()
 
@@ -50,6 +52,7 @@ def register(senzir):
             full_me = await senzir(
                 GetFullUserRequest("me")
             )
+
             original_data["bio"] = (
                 full_me.full_user.about or ""
             )
@@ -69,9 +72,10 @@ def register(senzir):
             GetFullUserRequest(user.id)
         )
 
-        bio = full_user.full_user.about or ""
+        # تحديد البايو حتى لا يظهر AboutTooLongError
+        bio = (full_user.full_user.about or "")[:70]
 
-        # تغيير الاسم والكنية والبايو
+        # تحديث الاسم والكنية والبايو
         await senzir(
             functions.account.UpdateProfileRequest(
                 first_name=first_name,
@@ -103,6 +107,63 @@ def register(senzir):
     @senzir.on(
         events.NewMessage(
             outgoing=True,
+            pattern=r"\.اعادة$"
+        )
+    )
+    async def revert(event):
+
+        nonlocal saved
+
+        if not saved:
+            return await event.edit(
+                "**لا توجد بيانات محفوظة لإعادة الحساب.**"
+            )
+
+        # حذف الصورة الحالية
+        photos = await senzir.get_profile_photos(
+            "me",
+            limit=1
+        )
+
+        if photos:
+            await senzir(
+                DeletePhotosRequest(
+                    id=[photos[0]]
+                )
+            )
+
+        # إعادة الاسم والكنية والبايو
+        await senzir(
+            functions.account.UpdateProfileRequest(
+                first_name=original_data["first_name"],
+                last_name=original_data["last_name"],
+                about=original_data["bio"]
+            )
+        )
+
+        # إعادة الصورة الأصلية
+        if original_data["photo"]:
+            uploaded = await senzir.upload_file(
+                original_data["photo"]
+            )
+
+            await senzir(
+                UploadProfilePhotoRequest(
+                    file=uploaded
+                )
+            )
+
+        # تصفير البيانات
+        original_data["first_name"] = None
+        original_data["last_name"] = None
+        original_data["bio"] = None
+        original_data["photo"] = None
+
+        saved = False
+
+        await event.edit(
+            "**𓆰 تمت إعادة الحساب لوضعه الأصلي ✅**"
+        )            outgoing=True,
             pattern=r"\.اعادة$"
         )
     )
