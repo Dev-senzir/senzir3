@@ -9,6 +9,17 @@ from telethon.tl.types import (
     ChannelParticipantCreator,
 )
 from telethon.errors import UserNotParticipantError
+from .vars import (
+    mention,
+    username,
+    userid,
+    firstname,
+    lastname,
+    fullname,
+    user_link,
+    user_id,
+    user_username,
+)
 
 
 DB_FILE = os.path.join(
