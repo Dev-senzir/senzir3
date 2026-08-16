@@ -9,17 +9,8 @@ from telethon.tl.types import (
     ChannelParticipantCreator,
 )
 from telethon.errors import UserNotParticipantError
-from .vars import (
-    mention,
-    username,
-    userid,
-    firstname,
-    lastname,
-    fullname,
-    user_link,
-    user_id,
-    user_username,
-)
+
+from .vars import mention
 
 
 DB_FILE = os.path.join(
@@ -165,7 +156,7 @@ def register(senzir):
     @senzir.on(
         events.NewMessage(
             outgoing=True,
-            pattern=r"\.اشتراك اجباري(?:\s+(.+))$"
+            pattern=r"\.اشتراك اجباري(?:\s+([\s\S]+))?$"
         )
     )
     async def enable(event):
@@ -174,10 +165,10 @@ def register(senzir):
 
         if not value:
             return await event.edit(
-                "**⎉╎طريقة الاستخدام:**\n\n"
-                "للمجموعة أو القناة العامة:\n"
+                "**⎉╎ضع رابط القناة أو المجموعة أولًا.**\n\n"
+                "⎉╎للعامة:\n"
                 "`.اشتراك اجباري @username`\n\n"
-                "للمجموعة أو القناة الخاصة:\n"
+                "⎉╎للخاصة:\n"
                 "`.اشتراك اجباري -1001234567890`"
             )
 
@@ -186,12 +177,12 @@ def register(senzir):
         if albrans is None:
             return await event.edit(
                 "**⛔️ المعرف غير صحيح.**\n\n"
-                "استخدم `@username` للعامة\n"
-                "أو `-100xxxxxxxxxx` للخاصة."
+                "⎉╎استخدم `@username` للقناة أو المجموعة العامة.\n"
+                "⎉╎أو استخدم `-100xxxxxxxxxx` للقناة أو المجموعة الخاصة."
             )
 
         await event.edit(
-            "**⎉╎جاري التحقق من المجموعة/القناة... ⏳**"
+            "**⎉╎جاري التحقق من القناة/المجموعة... ⏳**"
         )
 
         allowed, entity = await check_owner_permission(
@@ -201,26 +192,28 @@ def register(senzir):
 
         if entity is None:
             return await event.edit(
-                "**⛔️ لم أستطع الوصول إلى المجموعة/القناة.**\n\n"
+                "**⛔️ لم أستطع الوصول إلى القناة أو المجموعة.**\n\n"
                 "تأكد من صحة المعرف وأن الحساب موجود فيها."
             )
 
         if not allowed:
             return await event.edit(
                 "**⛔️ لا يمكن تفعيل الاشتراك الإجباري.**\n\n"
-                "يجب أن يكون حساب السورس مشرفًا أو مالكًا "
-                "في المجموعة/القناة."
+                "⎉╎يجب أن يكون حساب السورس مشرفًا أو مالكًا فيها."
             )
+
+        if getattr(entity, "megagroup", False):
+            place_type = "المجموعة"
+        else:
+            place_type = "القناة"
 
         set_channel(albrans)
 
         await event.edit(
-            "**⎉╎تم تفعيل الاشتراك الإجباري ✅**\n\n"
-            f"⎉╎المجموعة/القناة: `{albrans}`\n\n"
-            "⎉╎أي شخص يراسلك بالخاص يجب أن يكون "
-            "مشتركًا فيها أولًا."
+            f"**⎉╎تم تفعيل الاشتراك الإجباري ✅**\n\n"
+            f"⎉╎النوع: {place_type}\n"
+            f"⎉╎المعرف: `{albrans}`"
         )
-
 
     @senzir.on(
         events.NewMessage(
@@ -240,7 +233,6 @@ def register(senzir):
         await event.edit(
             "**⎉╎تم إيقاف الاشتراك الإجباري ✅**"
         )
-
 
     @senzir.on(
         events.NewMessage(
@@ -273,6 +265,19 @@ def register(senzir):
         if user.id == me.id:
             return
 
+        try:
+            entity = await senzir.get_entity(albrans)
+        except Exception as e:
+            print(
+                f"[esthrak] Entity error: {e}"
+            )
+            return
+
+        if getattr(entity, "megagroup", False):
+            place_type = "المجموعة"
+        else:
+            place_type = "القناة"
+
         subscribed = await is_subscribed(
             senzir,
             albrans,
@@ -289,16 +294,19 @@ def register(senzir):
                 f"[esthrak] Delete error: {e}"
             )
 
+        text = (
+            f"**مرحبا عزيزي {mention(user)} .**\n\n"
+            f"⎉╎يجب عليك الاشتراك في هذه {place_type} أولًا للتمكن من مراسلتي.\n\n"
+            f"⎉╎المعرف: `{albrans}`\n\n"
+            "⎉╎بعد الاشتراك أرسل رسالتك مرة أخرى "
+            "ليتم التحقق منك تلقائيًا ✅"
+        )
+
         try:
             await senzir.send_message(
                 event.chat_id,
-                f"**مرحبا عزيزي {mention(user)} .**\n\n"
-                "⎉╎يجب عليك الاشتراك في هذه القناة  أولًا للتمكن من مراسلتي.\n\n"
-                f"⎉╎المعرف: {albrans}\n\n"
-                "⎉╎بعد الاشتراك أرسل رسالتك مرة أخرى "
-                "ليتم التحقق منك تلقائيًا ✅"
+                text
             )
-
         except Exception as e:
             print(
                 f"[esthrak] Send error: {e}"
