@@ -1387,5 +1387,5 @@ async def handle_senzir(event):
         else:
             response = "**᯽︙ يُرجى تحديد معرف القناة او المجموعة مع التمويل يامطوري ❤️** "
         await event.reply(response)
-		print("تم تنصيــب سورس البرنس وسينـزر بنجــاح ✔️🔥")
+print("تم تنصيــب سورس البرنس وسينـزر بنجــاح ✔️🔥")
 senzir.run_until_disconnected()
