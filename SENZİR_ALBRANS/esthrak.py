@@ -4,7 +4,6 @@ import sqlite3
 from telethon import events
 from telethon.tl import functions
 from telethon.tl.types import (
-    ChannelParticipant,
     ChannelParticipantAdmin,
     ChannelParticipantCreator,
 )
@@ -75,12 +74,6 @@ def normalize_channel(value):
     if value.startswith("@"):
         return value
 
-    if value.startswith("-100"):
-        try:
-            return int(value)
-        except ValueError:
-            return None
-
     return None
 
 
@@ -111,7 +104,7 @@ async def check_owner_permission(senzir, albrans):
 
     except Exception as e:
         print(
-            f"[esthrak] Permission check error: {e}"
+            f"[esthrak] Permission error: {e}"
         )
         return False, None
 
@@ -127,19 +120,7 @@ async def is_subscribed(senzir, albrans, user_id):
             )
         )
 
-        membership = participant.participant
-
-        if isinstance(
-            membership,
-            (
-                ChannelParticipant,
-                ChannelParticipantAdmin,
-                ChannelParticipantCreator,
-            )
-        ):
-            return True
-
-        return False
+        return True
 
     except UserNotParticipantError:
         return False
@@ -165,11 +146,9 @@ def register(senzir):
 
         if not value:
             return await event.edit(
-                "**⎉╎ضع رابط القناة أو المجموعة أولًا.**\n\n"
-                "⎉╎للعامة:\n"
-                "`.اشتراك اجباري @username`\n\n"
-                "⎉╎للخاصة:\n"
-                "`.اشتراك اجباري -1001234567890`"
+                "**⎉╎ضع معرف القناة أو المجموعة أولًا.**\n\n"
+                "⎉╎مثال:\n"
+                "`.اشتراك اجباري @username`"
             )
 
         albrans = normalize_channel(value)
@@ -177,8 +156,9 @@ def register(senzir):
         if albrans is None:
             return await event.edit(
                 "**⛔️ المعرف غير صحيح.**\n\n"
-                "⎉╎استخدم `@username` للقناة أو المجموعة العامة.\n"
-                "⎉╎أو استخدم `-100xxxxxxxxxx` للقناة أو المجموعة الخاصة."
+                "⎉╎الاشتراك الإجباري يعمل مع القنوات "
+                "والمجموعات العامة فقط.\n\n"
+                "⎉╎استخدم معرفًا يبدأ بـ `@`."
             )
 
         await event.edit(
@@ -196,6 +176,12 @@ def register(senzir):
                 "تأكد من صحة المعرف وأن الحساب موجود فيها."
             )
 
+        if not getattr(entity, "username", None):
+            return await event.edit(
+                "**⛔️ هذه ليست جهة عامة.**\n\n"
+                "يجب أن تحتوي القناة أو المجموعة على معرف عام."
+            )
+
         if not allowed:
             return await event.edit(
                 "**⛔️ لا يمكن تفعيل الاشتراك الإجباري.**\n\n"
@@ -207,12 +193,18 @@ def register(senzir):
         else:
             place_type = "القناة"
 
+        title = entity.title or "الاشتراك"
+
+        channel_link = (
+            f"[{title}](https://t.me/{entity.username})"
+        )
+
         set_channel(albrans)
 
         await event.edit(
             f"**⎉╎تم تفعيل الاشتراك الإجباري ✅**\n\n"
             f"⎉╎النوع: {place_type}\n"
-            f"⎉╎المعرف: `{albrans}`"
+            f"⎉╎الاشتراك: {channel_link}"
         )
 
     @senzir.on(
@@ -273,11 +265,6 @@ def register(senzir):
             )
             return
 
-        if getattr(entity, "megagroup", False):
-            place_type = "المجموعة"
-        else:
-            place_type = "القناة"
-
         subscribed = await is_subscribed(
             senzir,
             albrans,
@@ -294,10 +281,26 @@ def register(senzir):
                 f"[esthrak] Delete error: {e}"
             )
 
+        title = entity.title or "الاشتراك"
+        username_value = getattr(entity, "username", None)
+
+        if not username_value:
+            return
+
+        channel_link = (
+            f"[{title}](https://t.me/{username_value})"
+        )
+
+        if getattr(entity, "megagroup", False):
+            place_type = "المجموعة"
+        else:
+            place_type = "القناة"
+
         text = (
             f"**مرحبا عزيزي {mention(user)} .**\n\n"
-            f"⎉╎يجب عليك الاشتراك في هذه {place_type} أولًا للتمكن من مراسلتي.\n\n"
-            f"⎉╎المعرف: `{albrans}`\n\n"
+            f"⎉╎يجب عليك الاشتراك في هذه {place_type} "
+            f"أولًا للتمكن من مراسلتي.\n\n"
+            f"⎉╎الاشتراك: {channel_link}\n\n"
             "⎉╎بعد الاشتراك أرسل رسالتك مرة أخرى "
             "ليتم التحقق منك تلقائيًا ✅"
         )
@@ -305,10 +308,10 @@ def register(senzir):
         try:
             await senzir.send_message(
                 event.chat_id,
-                text
+                text,
+                parse_mode="md"
             )
         except Exception as e:
             print(
                 f"[esthrak] Send error: {e}"
             )
-            # ©️ All rights reserved to source senzir and albrans ®️ #
