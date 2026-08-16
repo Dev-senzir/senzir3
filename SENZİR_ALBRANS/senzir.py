@@ -80,6 +80,9 @@ procetion.register(senzir)
 from . import impersonate
 impersonate.register(senzir)
 
+from . import eshtrak
+eshtrak.register(senzir)
+
 
 @senzir.on(events.NewMessage)
 async def mansab(event):
