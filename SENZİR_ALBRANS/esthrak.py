@@ -1,4 +1,3 @@
-
 import os
 import sqlite3
 
@@ -14,7 +13,7 @@ from telethon.errors import UserNotParticipantError
 
 DB_FILE = os.path.join(
     os.path.dirname(__file__),
-    "eshtrak.db"
+    "esthrak.db"
 )
 
 
@@ -84,7 +83,6 @@ def normalize_channel(value):
 
 
 async def check_owner_permission(senzir, albrans):
-
     try:
         entity = await senzir.get_entity(albrans)
         me = await senzir.get_me()
@@ -100,13 +98,10 @@ async def check_owner_permission(senzir, albrans):
 
         if isinstance(
             membership,
-            ChannelParticipantCreator
-        ):
-            return True, entity
-
-        if isinstance(
-            membership,
-            ChannelParticipantAdmin
+            (
+                ChannelParticipantCreator,
+                ChannelParticipantAdmin,
+            )
         ):
             return True, entity
 
@@ -114,13 +109,12 @@ async def check_owner_permission(senzir, albrans):
 
     except Exception as e:
         print(
-            f"[eshtrak] خطأ في التحقق من صلاحية الحساب: {e}"
+            f"[esthrak] Permission check error: {e}"
         )
         return False, None
 
 
 async def is_subscribed(senzir, albrans, user_id):
-
     try:
         entity = await senzir.get_entity(albrans)
 
@@ -150,7 +144,7 @@ async def is_subscribed(senzir, albrans, user_id):
 
     except Exception as e:
         print(
-            f"[eshtrak] خطأ في فحص الاشتراك: {e}"
+            f"[esthrak] Subscription check error: {e}"
         )
         return False
 
@@ -281,7 +275,7 @@ def register(senzir):
             await event.delete()
         except Exception as e:
             print(
-                f"[eshtrak] خطأ في حذف الرسالة: {e}"
+                f"[esthrak] Delete error: {e}"
             )
 
         try:
@@ -296,5 +290,5 @@ def register(senzir):
 
         except Exception as e:
             print(
-                f"[eshtrak] خطأ في إرسال التنبيه: {e}"
+                f"[esthrak] Send error: {e}"
             )
