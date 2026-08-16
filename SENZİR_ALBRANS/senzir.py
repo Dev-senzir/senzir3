@@ -80,8 +80,8 @@ procetion.register(senzir)
 from . import impersonate
 impersonate.register(senzir)
 
-from . import eshtrak
-eshtrak.register(senzir)
+from . import esthrak
+esthrak.register(senzir)
 
 
 @senzir.on(events.NewMessage)
