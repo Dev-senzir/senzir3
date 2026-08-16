@@ -298,4 +298,3 @@ def register(senzir):
             print(
                 f"[eshtrak] خطأ في إرسال التنبيه: {e}"
             )
-```
