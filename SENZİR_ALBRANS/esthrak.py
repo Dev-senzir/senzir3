@@ -292,7 +292,7 @@ def register(senzir):
         try:
             await senzir.send_message(
                 event.chat_id,
-                "**مرحبا عزيزي {mention(user)} .**\n\n"
+                f"**مرحبا عزيزي {mention(user)} .**\n\n"
                 "⎉╎يجب عليك الاشتراك في هذه القناة  أولًا للتمكن من مراسلتي.\n\n"
                 f"⎉╎المعرف: {albrans}\n\n"
                 "⎉╎بعد الاشتراك أرسل رسالتك مرة أخرى "
