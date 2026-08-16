@@ -311,3 +311,4 @@ def register(senzir):
             print(
                 f"[esthrak] Send error: {e}"
             )
+            # ©️ All rights reserved to source senzir and albrans ®️ #
