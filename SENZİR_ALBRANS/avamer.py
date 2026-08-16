@@ -86,4 +86,3 @@ async def ms4(event):
 **""",
         parse_mode="md"
     )
-        )
