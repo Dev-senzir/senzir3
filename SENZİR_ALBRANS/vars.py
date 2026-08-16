@@ -1,30 +1,38 @@
-from telethon import events
 
-from .vars_sql import set_var
+def mention(user):
+    return f"[{user.first_name or 'المستخدم'}](tg://user?id={user.id})"
 
 
-def register(senzir):
+def username(user):
+    return f"@{user.username}" if user.username else "لا يوجد"
 
-    @senzir.on(
-        events.NewMessage(
-            outgoing=True,
-            pattern=r"\.اضف كليشة الاشتراك الاجباري(?:\s+(.+))$"
-        )
-    )
-    async def change_subscription_text(event):
 
-        text = event.pattern_match.group(1)
+def userid(user):
+    return str(user.id)
 
-        if not text:
-            return await event.edit(
-                "**⛔️ اكتب الكليشة بعد الأمر.**"
-            )
 
-        set_var(
-            "subscription_text",
-            text.replace("\\n", "\n")
-        )
+def firstname(user):
+    return user.first_name or ""
 
-        await event.edit(
-            "**⎉╎تم تغيير كليشة الاشتراك الإجباري ✅**"
-        )
+
+def lastname(user):
+    return user.last_name or ""
+
+
+def fullname(user):
+    first = user.first_name or ""
+    last = user.last_name or ""
+    return f"{first} {last}".strip()
+
+
+def user_link(user):
+    name = user.first_name or "المستخدم"
+    return f"[{name}](tg://user?id={user.id})"
+
+
+def user_id(user):
+    return user.id
+
+
+def user_username(user):
+    return user.username or ""
